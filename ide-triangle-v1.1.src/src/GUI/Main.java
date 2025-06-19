@@ -38,6 +38,17 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import Core.Visitors.TreeVisitor;
 import javax.swing.tree.DefaultMutableTreeNode;
+import Triangle.SyntacticAnalyzer.*;
+import Triangle.AbstractSyntaxTrees.*;
+import Triangle.SyntacticAnalyzer.*;
+import Triangle.AbstractSyntaxTrees.*;
+import Triangle.CodeGenerator.LLVMGenerator;
+import Triangle.Compiler;
+import Triangle.ErrorReporter;
+
+
+
+
 
 /**
  * The Main class. Contains the main form.
@@ -160,8 +171,9 @@ public class Main extends javax.swing.JFrame {
     }
     // </editor-fold>
     
-    // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         toolBarsPanel = new javax.swing.JPanel();
         fileToolBar = new javax.swing.JToolBar();
         buttonNew = new javax.swing.JButton();
@@ -174,6 +186,7 @@ public class Main extends javax.swing.JFrame {
         triangleToolBar = new javax.swing.JToolBar();
         buttonCompile = new javax.swing.JButton();
         buttonRun = new javax.swing.JButton();
+        LLVM = new javax.swing.JButton();
         desktopPane = new javax.swing.JDesktopPane();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
@@ -195,23 +208,24 @@ public class Main extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("IDE-Triangle 1.1");
-        setFont(new java.awt.Font("Tahoma", 0, 11));
+        setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         setIconImage(new ImageIcon(this.getClass().getResource("Icons/iconMain.gif")).getImage());
         setLocationByPlatform(true);
-        setName("mainFrame");
+        setName("mainFrame"); // NOI18N
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
             }
         });
 
+        toolBarsPanel.setFocusable(false);
         toolBarsPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
-        toolBarsPanel.setFocusable(false);
         fileToolBar.setFocusable(false);
-        fileToolBar.setName("File");
+        fileToolBar.setName("File"); // NOI18N
         fileToolBar.setRequestFocusEnabled(false);
-        buttonNew.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconFileNew.gif")));
+
+        buttonNew.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconFileNew.gif"))); // NOI18N
         buttonNew.setToolTipText("New...");
         buttonNew.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
         buttonNew.setBorderPainted(false);
@@ -222,10 +236,9 @@ public class Main extends javax.swing.JFrame {
                 newMenuItemActionPerformed(evt);
             }
         });
-
         fileToolBar.add(buttonNew);
 
-        buttonOpen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconFileOpen.gif")));
+        buttonOpen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconFileOpen.gif"))); // NOI18N
         buttonOpen.setToolTipText("Open...");
         buttonOpen.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
         buttonOpen.setBorderPainted(false);
@@ -236,10 +249,9 @@ public class Main extends javax.swing.JFrame {
                 openMenuItemActionPerformed(evt);
             }
         });
-
         fileToolBar.add(buttonOpen);
 
-        buttonSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconFileSave.gif")));
+        buttonSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconFileSave.gif"))); // NOI18N
         buttonSave.setToolTipText("Save...");
         buttonSave.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
         buttonSave.setBorderPainted(false);
@@ -251,15 +263,15 @@ public class Main extends javax.swing.JFrame {
                 saveMenuItemActionPerformed(evt);
             }
         });
-
         fileToolBar.add(buttonSave);
 
         toolBarsPanel.add(fileToolBar);
 
         editToolBar.setFocusable(false);
-        editToolBar.setName("Edit");
+        editToolBar.setName("Edit"); // NOI18N
         editToolBar.setRequestFocusEnabled(false);
-        buttonCut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconEditCut.gif")));
+
+        buttonCut.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconEditCut.gif"))); // NOI18N
         buttonCut.setToolTipText("Cut...");
         buttonCut.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
         buttonCut.setBorderPainted(false);
@@ -271,10 +283,9 @@ public class Main extends javax.swing.JFrame {
                 cutMenuItemActionPerformed(evt);
             }
         });
-
         editToolBar.add(buttonCut);
 
-        buttonCopy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconEditCopy.gif")));
+        buttonCopy.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconEditCopy.gif"))); // NOI18N
         buttonCopy.setToolTipText("Copy...");
         buttonCopy.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
         buttonCopy.setBorderPainted(false);
@@ -286,10 +297,9 @@ public class Main extends javax.swing.JFrame {
                 copyMenuItemActionPerformed(evt);
             }
         });
-
         editToolBar.add(buttonCopy);
 
-        buttonPaste.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconEditPaste.gif")));
+        buttonPaste.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconEditPaste.gif"))); // NOI18N
         buttonPaste.setToolTipText("Paste...");
         buttonPaste.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
         buttonPaste.setBorderPainted(false);
@@ -301,15 +311,15 @@ public class Main extends javax.swing.JFrame {
                 pasteMenuItemActionPerformed(evt);
             }
         });
-
         editToolBar.add(buttonPaste);
 
         toolBarsPanel.add(editToolBar);
 
         triangleToolBar.setFocusable(false);
-        triangleToolBar.setName("Triangle");
+        triangleToolBar.setName("Triangle"); // NOI18N
         triangleToolBar.setRequestFocusEnabled(false);
-        buttonCompile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconTriangleCompile.gif")));
+
+        buttonCompile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconTriangleCompile.gif"))); // NOI18N
         buttonCompile.setToolTipText("Compile...");
         buttonCompile.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
         buttonCompile.setBorderPainted(false);
@@ -321,10 +331,9 @@ public class Main extends javax.swing.JFrame {
                 compileMenuItemActionPerformed(evt);
             }
         });
-
         triangleToolBar.add(buttonCompile);
 
-        buttonRun.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconTriangleRun.gif")));
+        buttonRun.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconTriangleRun.gif"))); // NOI18N
         buttonRun.setToolTipText("Run...");
         buttonRun.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
         buttonRun.setBorderPainted(false);
@@ -336,10 +345,17 @@ public class Main extends javax.swing.JFrame {
                 runMenuItemActionPerformed(evt);
             }
         });
-
         triangleToolBar.add(buttonRun);
 
         toolBarsPanel.add(triangleToolBar);
+
+        LLVM.setText("LLVM");
+        LLVM.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LLVMActionPerformed(evt);
+            }
+        });
+        toolBarsPanel.add(LLVM);
 
         getContentPane().add(toolBarsPanel, java.awt.BorderLayout.NORTH);
 
@@ -347,12 +363,13 @@ public class Main extends javax.swing.JFrame {
         desktopPane.setAutoscrolls(true);
         getContentPane().add(desktopPane, java.awt.BorderLayout.CENTER);
 
-        menuBar.setFont(new java.awt.Font("Verdana", 0, 11));
+        menuBar.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
+
         fileMenu.setMnemonic('F');
         fileMenu.setText("File");
-        fileMenu.setBorderPainted(true);
-        newMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
-        newMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconFileNew.gif")));
+
+        newMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        newMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconFileNew.gif"))); // NOI18N
         newMenuItem.setMnemonic('N');
         newMenuItem.setText("New");
         newMenuItem.setRequestFocusEnabled(false);
@@ -361,11 +378,10 @@ public class Main extends javax.swing.JFrame {
                 newMenuItemActionPerformed(evt);
             }
         });
-
         fileMenu.add(newMenuItem);
 
-        openMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-        openMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconFileOpen.gif")));
+        openMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        openMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconFileOpen.gif"))); // NOI18N
         openMenuItem.setMnemonic('O');
         openMenuItem.setText("Open");
         openMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -373,11 +389,10 @@ public class Main extends javax.swing.JFrame {
                 openMenuItemActionPerformed(evt);
             }
         });
-
         fileMenu.add(openMenuItem);
 
-        saveMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
-        saveMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconFileSave.gif")));
+        saveMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        saveMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconFileSave.gif"))); // NOI18N
         saveMenuItem.setMnemonic('S');
         saveMenuItem.setText("Save");
         saveMenuItem.setEnabled(false);
@@ -386,7 +401,6 @@ public class Main extends javax.swing.JFrame {
                 saveMenuItemActionPerformed(evt);
             }
         });
-
         fileMenu.add(saveMenuItem);
 
         saveAsMenuItem.setMnemonic('A');
@@ -397,9 +411,7 @@ public class Main extends javax.swing.JFrame {
                 saveAsMenuItemActionPerformed(evt);
             }
         });
-
         fileMenu.add(saveAsMenuItem);
-
         fileMenu.add(separatorExit);
 
         exitMenuItem.setMnemonic('x');
@@ -409,16 +421,15 @@ public class Main extends javax.swing.JFrame {
                 exitMenuItemActionPerformed(evt);
             }
         });
-
         fileMenu.add(exitMenuItem);
 
         menuBar.add(fileMenu);
 
         editMenu.setMnemonic('E');
         editMenu.setText("Edit");
-        editMenu.setBorderPainted(true);
-        cutMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_MASK));
-        cutMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconEditCut.gif")));
+
+        cutMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        cutMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconEditCut.gif"))); // NOI18N
         cutMenuItem.setMnemonic('t');
         cutMenuItem.setText("Cut");
         cutMenuItem.setEnabled(false);
@@ -427,11 +438,10 @@ public class Main extends javax.swing.JFrame {
                 cutMenuItemActionPerformed(evt);
             }
         });
-
         editMenu.add(cutMenuItem);
 
-        copyMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
-        copyMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconEditCopy.gif")));
+        copyMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        copyMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconEditCopy.gif"))); // NOI18N
         copyMenuItem.setMnemonic('C');
         copyMenuItem.setText("Copy");
         copyMenuItem.setEnabled(false);
@@ -440,11 +450,10 @@ public class Main extends javax.swing.JFrame {
                 copyMenuItemActionPerformed(evt);
             }
         });
-
         editMenu.add(copyMenuItem);
 
-        pasteMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_MASK));
-        pasteMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconEditPaste.gif")));
+        pasteMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        pasteMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconEditPaste.gif"))); // NOI18N
         pasteMenuItem.setMnemonic('P');
         pasteMenuItem.setText("Paste");
         pasteMenuItem.setToolTipText("");
@@ -454,16 +463,15 @@ public class Main extends javax.swing.JFrame {
                 pasteMenuItemActionPerformed(evt);
             }
         });
-
         editMenu.add(pasteMenuItem);
 
         menuBar.add(editMenu);
 
         triangleMenu.setMnemonic('T');
         triangleMenu.setText("Triangle");
-        triangleMenu.setBorderPainted(true);
+
         compileMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
-        compileMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconTriangleCompile.gif")));
+        compileMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconTriangleCompile.gif"))); // NOI18N
         compileMenuItem.setMnemonic('C');
         compileMenuItem.setText("Compile");
         compileMenuItem.setEnabled(false);
@@ -472,11 +480,10 @@ public class Main extends javax.swing.JFrame {
                 compileMenuItemActionPerformed(evt);
             }
         });
-
         triangleMenu.add(compileMenuItem);
 
         runMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
-        runMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconTriangleRun.gif")));
+        runMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconTriangleRun.gif"))); // NOI18N
         runMenuItem.setMnemonic('R');
         runMenuItem.setText("Run");
         runMenuItem.setEnabled(false);
@@ -485,15 +492,14 @@ public class Main extends javax.swing.JFrame {
                 runMenuItemActionPerformed(evt);
             }
         });
-
         triangleMenu.add(runMenuItem);
 
         menuBar.add(triangleMenu);
 
         helpMenu.setMnemonic('H');
         helpMenu.setText("Help");
-        helpMenu.setBorderPainted(true);
-        aboutMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconHelpAbout.gif")));
+
+        aboutMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/iconHelpAbout.gif"))); // NOI18N
         aboutMenuItem.setMnemonic('A');
         aboutMenuItem.setText("About");
         aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -501,7 +507,6 @@ public class Main extends javax.swing.JFrame {
                 aboutMenuItemActionPerformed(evt);
             }
         });
-
         helpMenu.add(aboutMenuItem);
 
         menuBar.add(helpMenu);
@@ -690,6 +695,22 @@ public class Main extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
+    private void LLVMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LLVMActionPerformed
+         FileFrame ff = (FileFrame) desktopPane.getSelectedFrame();
+        if (ff == null) return;
+
+        String sourceCode = ff.getSourcePaneText();
+        Program prog = Compiler.compileProgramFromSource(sourceCode);
+        // ← más limpio
+
+        LLVMGenerator generator = new LLVMGenerator();
+        prog.visit(generator, null);
+        String llvmCode = generator.getOutput();
+
+        ff.clearLLVMCode();
+        ff.writeToLLVMCode(llvmCode);
+    }//GEN-LAST:event_LLVMActionPerformed
+
     // </editor-fold>    
            
     // <editor-fold defaultstate="collapsed" desc=" Delegates and Listeners ">    
@@ -819,6 +840,7 @@ public class Main extends javax.swing.JFrame {
     
     // <editor-fold defaultstate="collapsed" desc=" GUI Variables ">
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    javax.swing.JButton LLVM;
     javax.swing.JMenuItem aboutMenuItem;
     javax.swing.JButton buttonCompile;
     javax.swing.JButton buttonCopy;

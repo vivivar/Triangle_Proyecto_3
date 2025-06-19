@@ -816,6 +816,11 @@ public final class Checker implements Visitor {
     idTable.enter(op, binding);
     return binding;
   }
+    
+    public Object visitEmptyDeclaration(EmptyDeclaration ast, Object o) {
+    return null;
+  }
+
 
   // Creates small ASTs to represent the standard types.
   // Creates small ASTs to represent "declarations" of standard types,

@@ -35,6 +35,7 @@ import Triangle.AbstractSyntaxTrees.ConstFormalParameter;
 import Triangle.AbstractSyntaxTrees.DotVname;
 import Triangle.AbstractSyntaxTrees.EmptyActualParameterSequence;
 import Triangle.AbstractSyntaxTrees.EmptyCommand;
+import Triangle.AbstractSyntaxTrees.EmptyDeclaration;
 import Triangle.AbstractSyntaxTrees.EmptyExpression;
 import Triangle.AbstractSyntaxTrees.EmptyFormalParameterSequence;
 import Triangle.AbstractSyntaxTrees.ErrorTypeDenoter;
@@ -342,6 +343,11 @@ public class LayoutVisitor implements Visitor {
   public Object visitOperator(Operator ast, Object obj) {
     return layoutNullary(ast.spelling);
   }
+  
+  public Object visitEmptyDeclaration(EmptyDeclaration ast, Object o) {
+  return null;
+}
+
 
 
   // Value-or-variable names

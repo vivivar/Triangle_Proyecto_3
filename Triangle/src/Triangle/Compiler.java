@@ -24,6 +24,9 @@ import Triangle.SyntacticAnalyzer.Parser;
 import Triangle.SyntacticAnalyzer.Scanner;
 import Triangle.SyntacticAnalyzer.SourceFile;
 import Triangle.TreeDrawer.Drawer;
+import Triangle.SyntacticAnalyzer.*;
+import Triangle.AbstractSyntaxTrees.*;
+
 
 /**
  * The main driver class for the Triangle compiler.
@@ -128,4 +131,14 @@ public class Compiler {
         String sourceName = args[0];
         compiledOK = compileProgram(sourceName, objectName, false, false);
     }
+    
+   public static Program compileProgramFromSource(String sourceCode) {
+        SourceFile sourceFile = new SourceFile(new java.io.StringReader(sourceCode));
+        Scanner scanner = new Scanner(sourceFile);
+        ErrorReporter reporter = new ErrorReporter();
+        Parser parser = new Parser(scanner, reporter);
+        return parser.parseProgram();
+    }
+
+
 }

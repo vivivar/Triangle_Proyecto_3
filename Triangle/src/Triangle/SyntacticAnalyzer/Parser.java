@@ -21,7 +21,7 @@ import Triangle.AbstractSyntaxTrees.*;
 
 public class Parser {
 
-  private Scanner lexicalAnalyser;
+  private final Scanner lexicalAnalyser;
   private ErrorReporter errorReporter;
   private Token currentToken;
   private SourcePosition previousTokenPosition;
@@ -523,20 +523,31 @@ public class Parser {
 ///////////////////////////////////////////////////////////////////////////////
 
   Declaration parseDeclaration() throws SyntaxError {
-    Declaration declarationAST = null; // in case there's a syntactic error
+  Declaration declarationAST = null; // in case there's a syntactic error
 
-    SourcePosition declarationPos = new SourcePosition();
-    start(declarationPos);
+  SourcePosition declarationPos = new SourcePosition();
+  start(declarationPos);
+
+  // ⚠️ ESTE BLOQUE ES NUEVO:
+    switch (currentToken.kind) {
+      case Token.IN:
+      case Token.END:
+      case Token.SEMICOLON:
+        finish(declarationPos);
+        return new EmptyDeclaration(declarationPos); // <-- AST nuevo
+    }
+
     declarationAST = parseSingleDeclaration();
     while (currentToken.kind == Token.SEMICOLON) {
       acceptIt();
       Declaration d2AST = parseSingleDeclaration();
       finish(declarationPos);
-      declarationAST = new SequentialDeclaration(declarationAST, d2AST,
-        declarationPos);
+      declarationAST = new SequentialDeclaration(declarationAST, d2AST, declarationPos);
     }
+
     return declarationAST;
   }
+
 
   Declaration parseSingleDeclaration() throws SyntaxError {
     Declaration declarationAST = null; // in case there's a syntactic error

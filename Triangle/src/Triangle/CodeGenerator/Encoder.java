@@ -45,6 +45,7 @@ import Triangle.AbstractSyntaxTrees.Declaration;
 import Triangle.AbstractSyntaxTrees.DotVname;
 import Triangle.AbstractSyntaxTrees.EmptyActualParameterSequence;
 import Triangle.AbstractSyntaxTrees.EmptyCommand;
+import Triangle.AbstractSyntaxTrees.EmptyDeclaration;
 import Triangle.AbstractSyntaxTrees.EmptyExpression;
 import Triangle.AbstractSyntaxTrees.EmptyFormalParameterSequence;
 import Triangle.AbstractSyntaxTrees.ErrorTypeDenoter;
@@ -996,4 +997,10 @@ public final class Encoder implements Visitor {
       }
     }
   }
+  
+  @Override
+  public Object visitEmptyDeclaration(EmptyDeclaration ast, Object o) {
+  return null;
+}
+
 }

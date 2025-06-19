@@ -14,7 +14,16 @@
 
 package Triangle.SyntacticAnalyzer;
 
+import java.io.BufferedReader;
+
+
 public class SourceFile {
+
+    private javax.swing.JEditorPane llvmPane;
+    private javax.swing.JScrollPane llvmScroll;
+    private BufferedReader charSource;
+
+    private int currentPos;
 
   public static final char EOL = '\n';
   public static final char EOT = '\u0000';
@@ -55,4 +64,21 @@ public class SourceFile {
   int getCurrentLine() {
     return currentLine;
   }
+
+
+    private void reportError(String message) {
+        System.err.println(message);
+    }
+  
+    public SourceFile(java.io.Reader reader) {
+    try {
+        charSource = new BufferedReader(reader); // sin declarar de nuevo
+        currentLine = 1; // no ""
+        currentPos = -2;
+    } catch (Exception e) {
+        System.err.println("Error al leer desde fuente de texto en memoria.");
+    }
+}
+
+
 }
