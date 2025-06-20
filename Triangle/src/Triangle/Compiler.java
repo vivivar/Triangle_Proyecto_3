@@ -71,7 +71,7 @@ public class Compiler {
                            "Triangle Compiler (Java Version 2.1)" +
                            " Hola Mundo! " +
                            " **********");
-
+        
         System.out.println("Syntactic Analysis ...");
         SourceFile source = new SourceFile(sourceName);
 
@@ -81,14 +81,16 @@ public class Compiler {
         }
 
         scanner  = new Scanner(source);
+        
         reporter = new ErrorReporter();
         parser   = new Parser(scanner, reporter);
+
         checker  = new Checker(reporter);
         encoder  = new Encoder(reporter);
         drawer   = new Drawer();
 
         // scanner.enableDebugging();
-        theAST = parser.parseProgram();				// 1st pass
+        theAST = parser.parseProgram();	// 1st pass
         if (reporter.numErrors == 0) {
             //if (showingAST) {
             //    drawer.draw(theAST);
@@ -132,9 +134,9 @@ public class Compiler {
         compiledOK = compileProgram(sourceName, objectName, false, false);
     }
     
-   public static Program compileProgramFromSource(String sourceCode) {
-        SourceFile sourceFile = new SourceFile(new java.io.StringReader(sourceCode));
-        Scanner scanner = new Scanner(sourceFile);
+    public static Program compileProgramFromSource(String sourceCode) {
+        SourceFile src = new SourceFile(new java.io.ByteArrayInputStream(sourceCode.getBytes()));
+        Scanner scanner = new Scanner(src);
         ErrorReporter reporter = new ErrorReporter();
         Parser parser = new Parser(scanner, reporter);
         return parser.parseProgram();

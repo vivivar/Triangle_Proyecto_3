@@ -1,0 +1,12 @@
+let
+  var x : Integer
+in
+  begin
+    x := 0;
+    getint(x);
+    while x < 5 do
+      begin
+        getint(x);
+        put(x)
+      end
+  end

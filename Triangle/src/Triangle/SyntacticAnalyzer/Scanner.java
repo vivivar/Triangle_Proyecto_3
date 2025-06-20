@@ -102,6 +102,45 @@ public final class Scanner {
       takeIt();
       while (isLetter(currentChar) || isDigit(currentChar))
         takeIt();
+        String spelling = currentSpelling.toString();
+
+        // Palabras reservadas
+        if (spelling.equals("let"))
+            return Token.LET;
+        else if (spelling.equals("in"))
+            return Token.IN;
+        else if (spelling.equals("func"))
+            return Token.FUNC;
+        else if (spelling.equals("then"))
+            return Token.THEN;
+        else if (spelling.equals("else"))
+            return Token.ELSE;
+        else if (spelling.equals("if"))
+            return Token.IF;
+        else if (spelling.equals("var"))
+            return Token.VAR;
+        else if (spelling.equals("while"))
+            return Token.WHILE;
+        else if (spelling.equals("do"))
+            return Token.DO;
+        else if (spelling.equals("begin"))
+            return Token.BEGIN;
+        else if (spelling.equals("end"))
+            return Token.END;
+        else if (spelling.equals("const"))
+            return Token.CONST;
+        else if (spelling.equals("type"))
+            return Token.TYPE;
+        else if (spelling.equals("proc"))
+            return Token.PROC;
+        else if (spelling.equals("array"))
+            return Token.ARRAY;
+        else if (spelling.equals("of"))
+            return Token.OF;
+        else if (spelling.equals("record"))
+            return Token.RECORD;
+      
+        else
       return Token.IDENTIFIER;
 
     case '0':  case '1':  case '2':  case '3':  case '4':
@@ -111,22 +150,26 @@ public final class Scanner {
         takeIt();
       return Token.INTLITERAL;
 
-    case '+':  case '-':  case '*': case '/':  case '=':
+    case '+':  case '-':  case '*': case '/': 
     case '<':  case '>':  case '\\':  case '&':  case '@':
     case '%':  case '^':  case '?':
       takeIt();
       while (isOperator(currentChar))
         takeIt();
       return Token.OPERATOR;
+    
+    case '=':
+      takeIt();
+      return Token.OPERATOR;
 
     case '\'':
-      takeIt();
-      takeIt(); // the quoted character
-      if (currentChar == '\'') {
-      	takeIt();
-        return Token.CHARLITERAL;
-      } else
-        return Token.ERROR;
+      takeIt(); // apertura
+      takeIt(); // carácter literal
+        if (currentChar == '\'') {
+          takeIt(); // cierre
+          return Token.CHARLITERAL;
+        } else
+      return Token.ERROR;
 
     case '.':
       takeIt();
@@ -190,6 +233,7 @@ public final class Scanner {
     SourcePosition pos;
     int kind;
 
+
     currentlyScanningToken = false;
     while (currentChar == '!'
            || currentChar == ' '
@@ -204,6 +248,16 @@ public final class Scanner {
     pos.start = sourceFile.getCurrentLine();
 
     kind = scanToken();
+
+    /*if (kind == Token.IDENTIFIER) {
+      String spelling = currentSpelling.toString();
+      for (int k = Token.firstReservedWord; k <= Token.lastReservedWord; k++) {
+        if (spelling.equals(Token.spell(k))) {
+          kind = k;
+          break;
+        }
+      }
+    }*/
 
     pos.finish = sourceFile.getCurrentLine();
     tok = new Token(kind, currentSpelling.toString(), pos);

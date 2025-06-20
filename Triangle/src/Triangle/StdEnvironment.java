@@ -14,13 +14,20 @@
 
 package Triangle;
 
+import TAM.Machine;
 import Triangle.AbstractSyntaxTrees.BinaryOperatorDeclaration;
 import Triangle.AbstractSyntaxTrees.ConstDeclaration;
+import Triangle.AbstractSyntaxTrees.FormalParameterSequence;
 import Triangle.AbstractSyntaxTrees.FuncDeclaration;
+import Triangle.AbstractSyntaxTrees.Identifier;
 import Triangle.AbstractSyntaxTrees.ProcDeclaration;
+import Triangle.AbstractSyntaxTrees.SingleFormalParameterSequence;
 import Triangle.AbstractSyntaxTrees.TypeDeclaration;
 import Triangle.AbstractSyntaxTrees.TypeDenoter;
 import Triangle.AbstractSyntaxTrees.UnaryOperatorDeclaration;
+import Triangle.AbstractSyntaxTrees.VarFormalParameter;
+import Triangle.CodeGenerator.PrimitiveRoutine;
+import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public final class StdEnvironment {
 
@@ -46,9 +53,49 @@ public final class StdEnvironment {
     equalDecl, unequalDecl, lessDecl, notlessDecl, greaterDecl, notgreaterDecl;
 
   public static ProcDeclaration
-    getDecl, putDecl, getintDecl, putintDecl, geteolDecl, puteolDecl;
+    getDecl, putDecl, getintDecl, putintDecl, geteolDecl, puteolDecl, getcharDecl;
 
   public static FuncDeclaration
     chrDecl, ordDecl, eolDecl, eofDecl;
 
+  public static void establishStdEnvironment() {
+
+  integerType = new Triangle.AbstractSyntaxTrees.SimpleTypeDenoter(
+    new Triangle.AbstractSyntaxTrees.Identifier("Integer", null),
+    null
+  );
+
+  charType = new Triangle.AbstractSyntaxTrees.SimpleTypeDenoter(
+    new Triangle.AbstractSyntaxTrees.Identifier("Char", null),
+    null
+  );
+  SourcePosition dummyPos = new SourcePosition();
+
+  Identifier integerId = new Identifier("Integer", dummyPos);
+  integerDecl = new TypeDeclaration(integerId, integerType, dummyPos);
+
+  Identifier charId = new Identifier("Char", dummyPos);
+  charDecl = new TypeDeclaration(charId, charType, dummyPos);
+
+  FormalParameterSequence getcharParams = new SingleFormalParameterSequence(
+    new VarFormalParameter(
+      new Identifier("c", dummyPos),
+      charType,
+      dummyPos
+    ),
+    dummyPos
+  );
+
+  PrimitiveRoutine getcharEntity = new PrimitiveRoutine(0, Machine.getDisplacement);
+
+  getcharDecl = new ProcDeclaration(
+    new Identifier("getchar", dummyPos),
+    getcharParams,
+    null,
+    dummyPos
+  );
+  getcharDecl.entity = getcharEntity;
+
+}
+  
 }

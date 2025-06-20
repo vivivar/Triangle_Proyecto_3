@@ -45,7 +45,6 @@ public class IDECompiler {
         System.out.println("********** " +
                            "Triangle Compiler (IDE-Triangle 1.0)" +
                            " **********");
-        
         System.out.println("Syntactic Analysis ...");
         SourceFile source = new SourceFile(sourceName);
         Scanner scanner = new Scanner(source);

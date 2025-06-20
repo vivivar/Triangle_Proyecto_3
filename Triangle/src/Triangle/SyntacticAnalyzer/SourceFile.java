@@ -15,6 +15,9 @@
 package Triangle.SyntacticAnalyzer;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
 
 
 public class SourceFile {
@@ -29,8 +32,11 @@ public class SourceFile {
   public static final char EOT = '\u0000';
 
   java.io.File sourceFile;
-  java.io.FileInputStream source;
+  java.io.InputStream source;
   int currentLine;
+  
+  private BufferedReader reader;
+  private boolean eof = false;
 
   public SourceFile(String filename) {
     try {
@@ -44,6 +50,17 @@ public class SourceFile {
       currentLine = 0;
     }
   }
+  
+  public SourceFile(java.io.InputStream inputStream) {
+    try {
+        sourceFile = null;
+        source = inputStream;
+        currentLine = 1;
+    } catch (Exception e) {
+        source = null;
+        currentLine = 0;
+    }
+}
 
   char getSource() {
     try {

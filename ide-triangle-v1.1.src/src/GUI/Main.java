@@ -45,6 +45,8 @@ import Triangle.AbstractSyntaxTrees.*;
 import Triangle.CodeGenerator.LLVMGenerator;
 import Triangle.Compiler;
 import Triangle.ErrorReporter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 
 
@@ -696,19 +698,65 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
     private void LLVMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LLVMActionPerformed
-         FileFrame ff = (FileFrame) desktopPane.getSelectedFrame();
-        if (ff == null) return;
+    FileFrame ff = (FileFrame) desktopPane.getSelectedFrame();
+    if (ff == null) return;
 
-        String sourceCode = ff.getSourcePaneText();
-        Program prog = Compiler.compileProgramFromSource(sourceCode);
-        // ← más limpio
+    String sourceCode = ff.getSourcePaneText();
+    Program prog = Compiler.compileProgramFromSource(sourceCode);
 
-        LLVMGenerator generator = new LLVMGenerator();
-        prog.visit(generator, null);
-        String llvmCode = generator.getOutput();
+    LLVMGenerator generator = new LLVMGenerator();
+    prog.visit(generator, null);
+    String llvmCode = generator.getOutput();
 
-        ff.clearLLVMCode();
-        ff.writeToLLVMCode(llvmCode);
+    ff.clearLLVMCode();
+    ff.writeToLLVMCode(llvmCode);
+
+    try {
+        // Guardar el código LLVM a archivo
+        FileWriter writer = new FileWriter("output.ll");
+        writer.write(llvmCode);
+        writer.close();
+        System.out.println(">> Código LLVM guardado en output.ll");
+
+        // Verificar que stdio-wrapper.c exista
+        File stdioFile = new File("stdio-wrapper.c");
+        if (!stdioFile.exists()) {
+            System.err.println(">> Archivo stdio-wrapper.c no encontrado. Debe estar junto a output.ll");
+            return;
+        }
+
+        // Compilar .ll junto con stdio-wrapper.c
+        ProcessBuilder pbCompile = new ProcessBuilder(
+            "clang", "output.ll", "stdio-wrapper.c", "-o", "output.exe", "-llegacy_stdio_definitions"
+        );
+        pbCompile.redirectErrorStream(true); // Unir stdout + stderr
+        Process compileProcess = pbCompile.start();
+
+        BufferedReader compileReader = new BufferedReader(
+            new InputStreamReader(compileProcess.getInputStream())
+        );
+        String compileLine;
+        while ((compileLine = compileReader.readLine()) != null) {
+            System.out.println("[CLANG] " + compileLine);
+        }
+
+        int compileExitCode = compileProcess.waitFor();
+        if (compileExitCode == 0) {
+            System.out.println(">> Compilación con clang completada correctamente.");
+        } else {
+            System.err.println(">> Error en la compilación con clang.");
+            return;
+        }
+
+        // Ejecutar el ejecutable en nueva consola de Windows
+        ProcessBuilder pbRun = new ProcessBuilder("cmd.exe", "/c", "start cmd /k output.exe");
+        pbRun.start();
+        System.out.println(">> Ejecutando el binario en nueva consola...");
+
+    } catch (IOException | InterruptedException e) {
+        e.printStackTrace();
+    }
+
     }//GEN-LAST:event_LLVMActionPerformed
 
     // </editor-fold>    

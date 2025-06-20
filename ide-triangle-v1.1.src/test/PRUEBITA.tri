@@ -1,3 +1,11 @@
 let
+  var x : Integer
 in
- skip
+  begin
+    x := 0;
+    while x < 5 do
+      begin
+        putint(x);
+        x := x + 1
+      end
+  end

@@ -79,13 +79,12 @@ public class Parser {
 ///////////////////////////////////////////////////////////////////////////////
 
   public Program parseProgram() {
-
+    
     Program programAST = null;
 
     previousTokenPosition.start = 0;
     previousTokenPosition.finish = 0;
     currentToken = lexicalAnalyser.scan();
-
     try {
       Command cAST = parseCommand();
       programAST = new Program(cAST, previousTokenPosition);
@@ -187,7 +186,6 @@ public class Parser {
 
   Command parseCommand() throws SyntaxError {
     Command commandAST = null; // in case there's a syntactic error
-
     SourcePosition commandPos = new SourcePosition();
 
     start(commandPos);
@@ -203,7 +201,6 @@ public class Parser {
 
   Command parseSingleCommand() throws SyntaxError {
     Command commandAST = null; // in case there's a syntactic error
-
     SourcePosition commandPos = new SourcePosition();
     start(commandPos);
 
@@ -251,6 +248,7 @@ public class Parser {
       {
         acceptIt();
         Expression eAST = parseExpression();
+        System.out.println("DEBUG: current token before THEN: " + currentToken.spelling + " (kind: " + currentToken.kind + ")");
         accept(Token.THEN);
         Command c1AST = parseSingleCommand();
         accept(Token.ELSE);

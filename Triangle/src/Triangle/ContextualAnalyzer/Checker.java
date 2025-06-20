@@ -14,12 +14,14 @@
 
 package Triangle.ContextualAnalyzer;
 
+import TAM.Machine;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import Triangle.ErrorReporter;
 import Triangle.StdEnvironment;
 import Triangle.AbstractSyntaxTrees.*;
+import Triangle.CodeGenerator.PrimitiveRoutine;
 import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public final class Checker implements Visitor {
@@ -763,15 +765,34 @@ public final class Checker implements Visitor {
   // Creates a small AST to represent the "declaration" of a standard
   // type, and enters it in the identification table.
 
-  private ProcDeclaration declareStdProc (String id, FormalParameterSequence fps) {
+private ProcDeclaration declareStdProc (String id, FormalParameterSequence fps) {
+  ProcDeclaration binding = new ProcDeclaration(
+    new Identifier(id, dummyPos),
+    fps,
+    new EmptyCommand(dummyPos),
+    dummyPos
+  );
 
-    ProcDeclaration binding;
+  int displacement;
 
-    binding = new ProcDeclaration(new Identifier(id, dummyPos), fps,
-                                  new EmptyCommand(dummyPos), dummyPos);
-    idTable.enter(id, binding);
-    return binding;
+  switch (id) {
+    case "putint":
+      displacement = Machine.putintDisplacement; break;
+    case "put":
+      displacement = Machine.putDisplacement; break;
+    case "getint":
+      displacement = Machine.getintDisplacement; break;
+    case "getchar":
+      displacement = Machine.getDisplacement; break;
+    default:
+      displacement = 0; break;
   }
+
+  binding.entity = new PrimitiveRoutine(0, displacement);
+
+  idTable.enter(id, binding);
+  return binding;
+}
 
   // Creates a small AST to represent the "declaration" of a standard
   // type, and enters it in the identification table.
@@ -876,6 +897,9 @@ public final class Checker implements Visitor {
     StdEnvironment.puteolDecl = declareStdProc("puteol", new EmptyFormalParameterSequence(dummyPos));
     StdEnvironment.equalDecl = declareStdBinaryOp("=", StdEnvironment.anyType, StdEnvironment.anyType, StdEnvironment.booleanType);
     StdEnvironment.unequalDecl = declareStdBinaryOp("\\=", StdEnvironment.anyType, StdEnvironment.anyType, StdEnvironment.booleanType);
+    StdEnvironment.getcharDecl = declareStdProc("getchar", new SingleFormalParameterSequence(
+    new VarFormalParameter(new Identifier("c", dummyPos), StdEnvironment.charType, dummyPos),
+    dummyPos));
 
   }
 }
