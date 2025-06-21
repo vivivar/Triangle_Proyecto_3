@@ -139,7 +139,6 @@ public final class Scanner {
             return Token.OF;
         else if (spelling.equals("record"))
             return Token.RECORD;
-      
         else
       return Token.IDENTIFIER;
 

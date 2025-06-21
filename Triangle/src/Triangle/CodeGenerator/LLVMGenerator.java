@@ -152,7 +152,7 @@ public Object visitIfCommand(IfCommand ast, Object obj) {
 
     return null;
 }
-      // ---------- Visit While ----------
+
 public Object visitWhileCommand(WhileCommand ast, Object obj) {
     String condLabel = newLabel("cond");
     String bodyLabel = newLabel("body");
@@ -212,30 +212,23 @@ public Object visitCallCommand(CallCommand ast, Object o) {
         String fmt = procName.equals("getint") ? "@.fmtReadInt" : "@.fmtReadChar";
         String type = "i32";
 
-        if (ast.APS instanceof SingleActualParameterSequence) {
-            ActualParameter ap = ((SingleActualParameterSequence) ast.APS).AP;
+    if (ast.APS instanceof SingleActualParameterSequence) {
+        ActualParameter ap = ((SingleActualParameterSequence) ast.APS).AP;
 
-            if (ap instanceof VarActualParameter) {
-                Vname vname = ((VarActualParameter) ap).V;
+        if (ap instanceof VarActualParameter) {
+            Vname vname = ((VarActualParameter) ap).V;
 
-                if (vname instanceof SimpleVname) {
-                    String varName = ((SimpleVname) vname).I.spelling;
+            if (vname instanceof SimpleVname) {
+                String varName = ((SimpleVname) vname).I.spelling;
+                String userVarPtr = "%" + varName;
 
-                    String tempPtr = "%" + varName + "_ptr";
-                    output.append("  ").append(tempPtr).append(" = alloca ").append(type).append("\n");
-
-                    output.append("  call i32 (i8*, ...) @scanf(i8* getelementptr inbounds (");
-                    output.append(procName.equals("getint") ? "[3 x i8], [3 x i8]* " : "[4 x i8], [4 x i8]* ");
-                    output.append(fmt).append(", i32 0, i32 0), ").append(type).append("* ").append(tempPtr).append(")\n");
-
-                    String tempValue = newTemp();
-                    output.append("  ").append(tempValue).append(" = load ").append(type).append(", ").append(type).append("* ").append(tempPtr).append("\n");
-
-                    String userVarPtr = "%" + varName;
-                    output.append("  store ").append(type).append(" ").append(tempValue).append(", ").append(type).append("* ").append(userVarPtr).append("\n");
-                }
+                // NO usamos tempPtr ni alloca extra aquí
+                output.append("  call i32 (i8*, ...) @scanf(i8* getelementptr inbounds (");
+                output.append(procName.equals("getint") ? "[3 x i8], [3 x i8]* " : "[4 x i8], [4 x i8]* ");
+                output.append(fmt).append(", i32 0, i32 0), ").append(type).append("* ").append(userVarPtr).append(")\n");
             }
         }
+    }
 
         return null;
     }
@@ -286,8 +279,13 @@ public Object visitCallCommand(CallCommand ast, Object o) {
     }
 
     @Override
-    public Object visitCharacterExpression(CharacterExpression ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public Object visitCharacterExpression(CharacterExpression ast, Object obj) {
+        String temp = newTemp();
+        char value = ast.CL.spelling.charAt(1); // Esto debe extraer 'x' de "'x'"
+        int ascii = (int) value;
+
+        output.append("  " + temp + " = add i32 0, " + ascii + "\n");
+        return temp;
     }
 
     @Override
@@ -339,9 +337,11 @@ public Object visitCallCommand(CallCommand ast, Object o) {
 
     @Override
     public Object visitSequentialDeclaration(SequentialDeclaration ast, Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        ast.D1.visit(this, o);
+        ast.D2.visit(this, o);
+        return null;
     }
-
+    
     @Override
     public Object visitTypeDeclaration(TypeDeclaration ast, Object o) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody

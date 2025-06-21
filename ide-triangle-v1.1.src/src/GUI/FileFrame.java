@@ -329,7 +329,6 @@ public class FileFrame extends javax.swing.JInternalFrame {
         tamScroll = new javax.swing.JScrollPane();
         tamPane = new javax.swing.JEditorPane();
         tableScroll = new javax.swing.JScrollPane();
-        LLVM = new javax.swing.JScrollPane();
 
         setClosable(true);
         setIconifiable(true);
@@ -402,7 +401,6 @@ public class FileFrame extends javax.swing.JInternalFrame {
 
         tableScroll.setBorder(null);
         tabbedPane.addTab("Table Details", tableScroll);
-        tabbedPane.addTab("LLVM ", LLVM);
 
         getContentPane().add(tabbedPane, java.awt.BorderLayout.CENTER);
 
@@ -411,7 +409,6 @@ public class FileFrame extends javax.swing.JInternalFrame {
       
     // <editor-fold defaultstate="collapsed" desc=" GUI Variables ">
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane LLVM;
     private javax.swing.JScrollPane astScroll;
     private javax.swing.JEditorPane consolePane;
     private javax.swing.JPanel consolePanel;

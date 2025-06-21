@@ -1,0 +1,19 @@
+let
+  var c : Char;
+  var continuar : Integer
+in
+  begin
+    continuar := 0;
+    while continuar = 0 do
+      begin
+        getchar(var c);
+        put(c);
+        if c = 'x' then
+          begin
+            continuar := 1;
+          end
+        else
+          begin
+          end
+      end
+  end

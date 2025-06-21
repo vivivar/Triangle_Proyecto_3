@@ -108,7 +108,8 @@ public class Main extends javax.swing.JFrame {
             copyMenuItem.setEnabled(false);
             pasteMenuItem.setEnabled(false);            
             compileMenuItem.setEnabled(false);
-            runMenuItem.setEnabled(false);           
+            runMenuItem.setEnabled(false);
+            LLVM.setEnabled(false);   
         } else
             checkSaveChanges();
     }
@@ -141,6 +142,7 @@ public class Main extends javax.swing.JFrame {
         pasteMenuItem.setEnabled(true);
         compileMenuItem.setEnabled(true);
         buttonCompile.setEnabled(true);
+        LLVM.setEnabled(true);
        
         checkSaveChanges();        
         return(x);
@@ -351,7 +353,9 @@ public class Main extends javax.swing.JFrame {
 
         toolBarsPanel.add(triangleToolBar);
 
-        LLVM.setText("LLVM");
+        LLVM.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Icons/llvm-logo.jpg"))); // NOI18N
+        LLVM.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        LLVM.setEnabled(false);
         LLVM.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 LLVMActionPerformed(evt);
@@ -700,6 +704,10 @@ public class Main extends javax.swing.JFrame {
     private void LLVMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LLVMActionPerformed
     FileFrame ff = (FileFrame) desktopPane.getSelectedFrame();
     if (ff == null) return;
+    
+    ff.clearConsole();
+    ff.selectConsole();
+    output.setDelegate(delegateConsole);
 
     String sourceCode = ff.getSourcePaneText();
     Program prog = Compiler.compileProgramFromSource(sourceCode);
@@ -724,7 +732,19 @@ public class Main extends javax.swing.JFrame {
             System.err.println(">> Archivo stdio-wrapper.c no encontrado. Debe estar junto a output.ll");
             return;
         }
+        try {
+            ProcessBuilder pbKill = new ProcessBuilder("taskkill", "/F", "/IM", "output.exe");
+            Process killProcess = pbKill.start();
 
+            BufferedReader killReader = new BufferedReader(new InputStreamReader(killProcess.getInputStream()));
+            String killLine;
+            while ((killLine = killReader.readLine()) != null) {
+                System.out.println("[TASKKILL] " + killLine);
+            }
+            killProcess.waitFor();
+        } catch (IOException | InterruptedException e) {
+            System.err.println(">> No se pudo cerrar instancias anteriores de output.exe (puede que no estuvieran abiertas).");
+        }
         // Compilar .ll junto con stdio-wrapper.c
         ProcessBuilder pbCompile = new ProcessBuilder(
             "clang", "output.ll", "stdio-wrapper.c", "-o", "output.exe", "-llegacy_stdio_definitions"

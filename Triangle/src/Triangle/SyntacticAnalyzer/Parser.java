@@ -278,7 +278,6 @@ public class Parser {
       finish(commandPos);
       commandAST = new EmptyCommand(commandPos);
       break;
-
     default:
       syntacticError("\"%\" cannot start a command",
         currentToken.spelling);
