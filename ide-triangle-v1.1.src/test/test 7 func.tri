@@ -1,0 +1,5 @@
+let
+  func suma(a: Integer) : Integer ~
+    a + 1
+in
+  putint(suma(6))

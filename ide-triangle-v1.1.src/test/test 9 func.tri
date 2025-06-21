@@ -1,0 +1,9 @@
+let
+  func externa(x: Integer) : Integer ~
+    let
+      func interna(y: Integer) : Integer ~
+        y + x
+    in
+      interna(5)
+in
+  putint(externa(3))
