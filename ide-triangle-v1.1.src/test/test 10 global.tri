@@ -1,0 +1,6 @@
+let
+  var x : Integer
+in
+  begin
+    putint(x)
+  end

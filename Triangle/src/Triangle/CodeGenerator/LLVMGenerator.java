@@ -65,6 +65,8 @@ public class LLVMGenerator implements Visitor {
         }
     }
     
+
+    
 private String getVariableReference(String name) {
     if (functionParameters.contains("%" + name)) {
         return "%" + name;
@@ -72,22 +74,52 @@ private String getVariableReference(String name) {
     return globalVars.contains(name) ? "@" + name : "%" + name;
 }
 
+private void extractGlobalVarDeclarations(SequentialDeclaration decl) {
+    if (decl.D1 instanceof VarDeclaration) {
+        decl.D1.visit(this, null);
+    } else if (decl.D1 instanceof SequentialDeclaration) {
+        extractGlobalVarDeclarations((SequentialDeclaration) decl.D1);
+    }
+
+    if (decl.D2 instanceof VarDeclaration) {
+        decl.D2.visit(this, null);
+    } else if (decl.D2 instanceof SequentialDeclaration) {
+        extractGlobalVarDeclarations((SequentialDeclaration) decl.D2);
+    }
+}
+
+private void processDeclarations(Declaration d) {
+    if (d instanceof SequentialDeclaration) {
+        SequentialDeclaration sd = (SequentialDeclaration) d;
+        processDeclarations(sd.D1);
+        processDeclarations(sd.D2);
+    } else {
+        d.visit(this, null); // Aquí se ejecuta visitVarDeclaration o visitFuncDeclaration, etc.
+    }
+}
+
     // ---------- Ejemplo: Programa completo ----------
 public Object visitProgram(Program ast, Object o) {
-    // Primero: declarar globales si fuera necesario (por ahora nada)
     isGlobalScope = true;
 
-    // (Aquí irían las globales si tienes variables globales explícitas)
-    // Ejemplo:
-    // globalVars.append("@x = global i32 0\n");
+    if (ast.C instanceof LetCommand) {
+        LetCommand let = (LetCommand) ast.C;
 
+        processDeclarations(let.D);
+
+        isGlobalScope = false;
+        System.out.println("[Scope] Entrando a main");
+
+        let.C.visit(this, o);
+        return null;
+    }
+
+    // Si no es un let, se procesa todo normal
     isGlobalScope = false;
-    System.out.println("[Scope] Entrando a main");
-
-    // Luego: generar el cuerpo de main (código ejecutable)
     ast.C.visit(this, o);
     return null;
 }
+
 
     // ---------- Ejemplo: comando Begin ----------
     public Object visitSequentialCommand(SequentialCommand ast, Object o) {
@@ -230,9 +262,10 @@ public Object visitVarDeclaration(VarDeclaration ast, Object o) {
         String name = ast.I.spelling;
         if (isGlobalScope) {
             globalVars.add(name);
-            emit("@" + name + " = global i32 0");
+            header.append("@").append(name).append(" = dso_local global i32 0, align 4\n");
+            System.out.println("Declarando variable: " + name + " (global? " + isGlobalScope + ")");
         } else {
-            emit("  %" + name + " = alloca i32");
+            mainCode.append("  %").append(name).append(" = alloca i32\n");
         }
         return null;
     }

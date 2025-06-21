@@ -1,0 +1,10 @@
+let
+  var x : Integer;
+  var y : Integer
+in
+  begin
+    x := 42;
+    putint(x);
+    y := x + 1;
+    putint(y)
+  end
